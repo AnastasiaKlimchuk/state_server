@@ -13,12 +13,7 @@ db = SQLAlchemy(app)
 from models import State
 
 
-@app.route("/")
-def hello():
-    return "Hello World!"
-
-
-@app.route("/state")
+@app.route("/state", methods=['GET'])
 def get_last():
     try:
         state = State.query.order_by(State.timestamp.desc()).first()
@@ -29,7 +24,7 @@ def get_last():
 
 
 @app.route('/add_state', methods=['POST'])
-def get_all_state():
+def add_state():
     if request.method == 'POST':
         state = State(
             tp=request.form['tp'],
@@ -62,6 +57,13 @@ def stop():
         return Response('Bed method', status=405)
 
 
+@app.route("/getall")
+def get_all():
+    try:
+        states = State.query.all()
+        return jsonify([e.serialize() for e in states])
+    except Exception as e:
+        return(str(e))
 
 
 if __name__ == '__main__':
