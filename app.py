@@ -18,12 +18,12 @@ def hello():
     return "Hello World!"
 
 
-@app.route("/states")
-def get_by_timestamp():
+@app.route("/state")
+def get_last():
     try:
-        timestamp = request.args.get('timestamp')
-        states = State.query.filter(State.timestamp > timestamp)
-        return jsonify([e.serialize() for e in states])
+        state = State.query.order_by(State.timestamp.desc()).first()
+        new_state = states_data_source.get_error(state)
+        return jsonify(new_state)
     except Exception as e:
         return (str(e))
 
